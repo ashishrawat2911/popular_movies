@@ -1,0 +1,2 @@
+rating(double ratings): "रेटिंग्स: $ratings"
+movies: "फ़िल्में"
