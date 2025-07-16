@@ -9,17 +9,7 @@ import 'package:popular_movies/domain/model/movie_details.dart';
 import 'package:popular_movies/domain/model/page.dart';
 import 'package:popular_movies/domain/model/video.dart';
 
-class MockMovieApiService extends Mock implements MovieApiService {}
-
-class MockMovieResponse extends Mock implements PageResponse<Movie> {}
-
-class MockVideoResponse extends Mock implements PageResponse<Video> {}
-
-class MockMovie extends Mock implements Movie {}
-
-class MockVideo extends Mock implements Video {}
-
-class MocMovieDetails extends Mock implements MovieDetails {}
+import '../../utils/mocks/mock_classes.dart';
 
 void main() {
   late MockMovieApiService mockMovieApiService;
@@ -28,7 +18,7 @@ void main() {
   late PageResponse<Video> mockVideoResponse;
   late Movie mockMovie;
   late MockVideo mockVideo;
-  late MocMovieDetails mockMovieDetails;
+  late MockMovieDetails mockMovieDetails;
 
   setUp(() {
     mockMovieApiService = MockMovieApiService();
@@ -37,7 +27,7 @@ void main() {
     mockVideoResponse = MockVideoResponse();
     mockMovie = MockMovie();
     mockVideo = MockVideo();
-    mockMovieDetails = MocMovieDetails();
+    mockMovieDetails = MockMovieDetails();
   });
 
   group('getPopularMovies', () {
