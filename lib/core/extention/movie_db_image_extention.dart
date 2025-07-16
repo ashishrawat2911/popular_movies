@@ -6,5 +6,7 @@ extension MovieDbImage on String {
   String get getYoutubeWatchBaseURL => Constants.youtubeWatchBaseURL + this;
 
   String get getYoutubeThumbnailBaseURl =>
-      Constants.youtubeThumbnailBaseURl + this + Constants.youtubeThumbnailImageQuality;
+      Constants.youtubeThumbnailBaseURl +
+      this +
+      Constants.youtubeThumbnailImageQuality;
 }

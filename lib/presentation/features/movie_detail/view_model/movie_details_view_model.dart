@@ -29,6 +29,8 @@ class MoviesDetailsViewModel extends Bloc<MovieDetailsEvent, MovieDetailState> {
     Emitter<MovieDetailState> emit,
     _LoadMovieDetailsEvent event,
   ) async {
+    emit(state.copyWith(
+        movieDetailResultState: MovieDetailResultState.loading()));
     final (movieResult, videoResult) = await (
       _getMovieDetailUseCase.call(event.id),
       _getMovieVideosUseCase.call(event.id)

@@ -3,7 +3,6 @@ analyzer:
     - '**/*.g.dart'
     - '**/*.freezed.dart'
     - '**/*.config.dart'
-    - '**/feature**/*_test.dart'
 
   language:
     strict-casts: true

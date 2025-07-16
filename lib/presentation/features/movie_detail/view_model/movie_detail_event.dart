@@ -7,6 +7,6 @@ sealed class MovieDetailsEvent {
 }
 
 class _LoadMovieDetailsEvent extends MovieDetailsEvent {
-    final int id;
-  const _LoadMovieDetailsEvent(this. id) : super._();
+  final int id;
+  const _LoadMovieDetailsEvent(this.id) : super._();
 }

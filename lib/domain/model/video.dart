@@ -5,9 +5,9 @@ part 'video.freezed.dart';
 part 'video.g.dart';
 
 @freezed
-abstract class Video with _$Video {  @JsonSerializable(fieldRename: FieldRename.snake)
-
-const factory Video(
+abstract class Video with _$Video {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  const factory Video(
     final String id,
     final String key,
     final String name,

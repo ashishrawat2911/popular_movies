@@ -5,7 +5,7 @@ import 'package:popular_movies/res/constants.dart';
 @lazySingleton
 class MovieApiAuthInterceptor extends Interceptor {
   MovieApiAuthInterceptor(
-   @Named(Constants.apiKeyName) this._apiKey,
+    @Named(Constants.apiKeyName) this._apiKey,
   );
 
   final String _apiKey;
