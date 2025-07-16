@@ -1,59 +1,122 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:popular_movies/core/test/movie_data_factory.dart';
 import 'package:popular_movies/core/failure/network_error.dart';
 import 'package:popular_movies/data/repository/movie_repository_impl.dart';
+import 'package:popular_movies/data/source/remote/service/movie_api_service.dart';
 import 'package:popular_movies/domain/model/movie.dart';
 import 'package:popular_movies/domain/model/movie_details.dart';
+import 'package:popular_movies/domain/model/page.dart';
+import 'package:popular_movies/domain/model/video.dart';
 
-class MockMovieRepositoryImpl extends Mock implements MovieRepositoryImpl {}
+class MockMovieApiService extends Mock implements MovieApiService {}
+
+class MockMovieResponse extends Mock implements PageResponse<Movie> {}
+
+class MockVideoResponse extends Mock implements PageResponse<Video> {}
+
+class MockMovie extends Mock implements Movie {}
+
+class MockVideo extends Mock implements Video {}
+
+class MocMovieDetails extends Mock implements MovieDetails {}
 
 void main() {
-  MockMovieRepositoryImpl mockMovieRepository = MockMovieRepositoryImpl();
+  late MockMovieApiService mockMovieApiService;
+  late MovieRepositoryImpl movieRepository;
+  late PageResponse<Movie> mockMovieResponse;
+  late PageResponse<Video> mockVideoResponse;
+  late Movie mockMovie;
+  late MockVideo mockVideo;
+  late MocMovieDetails mockMovieDetails;
 
-  group('getPopularMovies function testing', () {
-    test('success test', () async {
-      const mockValue = Right<Failure, List<Movie>>([]);
-      when(() => mockMovieRepository.getPopularMovies()).thenAnswer(
-        (realInvocation) async => mockValue,
+  setUp(() {
+    mockMovieApiService = MockMovieApiService();
+    movieRepository = MovieRepositoryImpl(mockMovieApiService);
+    mockMovieResponse = MockMovieResponse();
+    mockVideoResponse = MockVideoResponse();
+    mockMovie = MockMovie();
+    mockVideo = MockVideo();
+    mockMovieDetails = MocMovieDetails();
+  });
+
+  group('getPopularMovies', () {
+    test('should return list of movies on success', () async {
+      when(() => mockMovie.title).thenReturn("Title 1");
+      when(() => mockMovieResponse.results).thenReturn([mockMovie]);
+      when(() => mockMovieApiService.getMovies())
+          .thenAnswer((_) async => mockMovieResponse);
+
+      final result = await movieRepository.getPopularMovies();
+
+      expect((result as Right).value, mockMovieResponse.results);
+      expect(
+        (result as Right<Failure, List<Movie>>).value.first.title,
+        "Title 1",
       );
-      final movies = await mockMovieRepository.getPopularMovies();
-      expectSync((movies as Right<Failure, List<Movie>>).value.length,
-          mockValue.value.length);
     });
-    test('error test', () async {
-      final mockError =
-          Left<Failure, List<Movie>>(MovieDataFactory.getNetworkError());
-      when(() => mockMovieRepository.getPopularMovies()).thenAnswer(
-        (realInvocation) async => mockError,
-      );
-      final movies = await mockMovieRepository.getPopularMovies();
-      expectSync((movies as Left<Failure, List<Movie>>).value.message,
-          mockError.value.message);
+
+    test('should return failure on error', () async {
+      when(() => mockMovieApiService.getMovies()).thenThrow(Exception('Error'));
+
+      final result = await movieRepository.getPopularMovies();
+
+      expect((result as Left).value.message, 'Exception: Error');
+    });
+
+    test('should return empty list when API returns no movies', () async {
+      when(() => mockMovieResponse.results).thenReturn([]);
+      when(() => mockMovieApiService.getMovies())
+          .thenAnswer((_) async => mockMovieResponse);
+
+      final result = await movieRepository.getPopularMovies();
+
+      expect((result as Right).value, isEmpty);
     });
   });
 
-  group('getMovieDetail function testing', () {
-    test('success test', () async {
-      final mockValue =
-          Right<Failure, MovieDetails>(MovieDataFactory.getMovieDetails());
-      when(() => mockMovieRepository.getMovieDetail(0)).thenAnswer(
-        (realInvocation) async => mockValue,
-      );
-      final movies = await mockMovieRepository.getMovieDetail(0);
-      expectSync((movies as Right<Failure, MovieDetails>).value.title,
-          mockValue.value.title);
+  group('getMovieDetail', () {
+    test('should return movie details on success', () async {
+      when(() => mockMovieDetails.title).thenReturn("Title 1");
+
+      when(() => mockMovieApiService.getMovieDetails(1))
+          .thenAnswer((_) async => mockMovieDetails);
+
+      final result = await movieRepository.getMovieDetail(1);
+
+      expect((result as Right).value, mockMovieDetails);
+      expect((result as Right<Failure, MovieDetails>).value.title, "Title 1");
     });
-    test('error test', () async {
-      final mockError =
-          Left<Failure, MovieDetails>(MovieDataFactory.getNetworkError());
-      when(() => mockMovieRepository.getMovieDetail(0)).thenAnswer(
-        (realInvocation) async => mockError,
-      );
-      final movies = await mockMovieRepository.getMovieDetail(0);
-      expectSync((movies as Left<Failure, MovieDetails>).value.message,
-          mockError.value.message);
+
+    test('should return failure on error', () async {
+      when(() => mockMovieApiService.getMovieDetails(1))
+          .thenThrow(Exception('Error'));
+
+      final result = await movieRepository.getMovieDetail(1);
+
+      expect((result as Left).value.message, 'Exception: Error');
+    });
+  });
+  group('getMovieVideos', () {
+    test('should return list of videos on success', () async {
+      when(() => mockVideo.name).thenReturn("Video 1");
+      when(() => mockVideoResponse.results).thenReturn([mockVideo]);
+      when(() => mockMovieApiService.getMovieVideos(1))
+          .thenAnswer((_) async => mockVideoResponse);
+
+      final result = await movieRepository.getMovieVideos(1);
+
+      expect(
+          (result as Right<Failure, List<Video>>).value.first.name, "Video 1");
+    });
+
+    test('should return failure on error', () async {
+      when(() => mockMovieApiService.getMovieVideos(1))
+          .thenThrow(Exception('Error'));
+
+      final result = await movieRepository.getMovieVideos(1);
+
+      expect((result as Left).value.message, 'Exception: Error');
     });
   });
 }
