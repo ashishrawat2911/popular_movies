@@ -36,17 +36,17 @@ class MoviesScreen extends StatelessWidget {
   }
 
   Widget handleMoviesUi(MoviesResultState moviesResultState) {
-    return moviesResultState.when(
-      loading: () {
+    return moviesResultState.map(
+      loading: (_) {
         return const Center(
           child: CircularProgressIndicator(),
         );
       },
-      result: (r) {
-        return _Movies(r);
+      result: (resultState) {
+        return _Movies(resultState.movies);
       },
-      error: (error) {
-        return Center(child: Text(error.message));
+      error: (errorState) {
+        return Center(child: Text(errorState.error.message));
       },
     );
   }
@@ -69,29 +69,40 @@ class _Movies extends StatelessWidget {
       itemCount: movies.length,
       padding: const EdgeInsets.all(10),
       itemBuilder: (BuildContext context, int index) {
-        final item = movies[index];
-        return GestureDetector(
-          onTap: () => context.pushRoute(MoviesDetailRoute(id: item.id)),
-          child: Column(
-            children: [
-              CachedNetworkImage(
-                imageUrl: item.posterPath.getMovieDBImage,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                item.title,
-                style: context.textTheme.titleMedium,
-              ),
-              Text(
-                context.translations.rating(item.voteAverage),
-                style: context.textTheme.labelLarge,
-              )
-            ],
-          ),
+        final movie = movies[index];
+        return _MovieItem(
+          movie: movie,
         );
       },
+    );
+  }
+}
+
+class _MovieItem extends StatelessWidget {
+  final Movie movie;
+
+  const _MovieItem({super.key, required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.pushRoute(MoviesDetailRoute(id: movie.id)),
+      child: Column(
+        children: [
+          CachedNetworkImage(
+            imageUrl: movie.posterPath.getMovieDBImage,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            movie.title,
+            style: context.textTheme.titleMedium,
+          ),
+          Text(
+            context.translations.rating(movie.voteAverage),
+            style: context.textTheme.labelLarge,
+          ),
+        ],
+      ),
     );
   }
 }

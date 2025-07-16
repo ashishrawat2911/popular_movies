@@ -12,7 +12,10 @@ class GetMovieVideosUseCaseImpl extends GetMovieVideosUseCase {
   GetMovieVideosUseCaseImpl(this._movieRepository);
 
   @override
-  Future<Either<Failure, List<Video>>> call(int id) {
-    return _movieRepository.getMovieVideos(id);
+  Future<Either<Failure, List<Video>>> call(int id) async {
+    final result = await _movieRepository.getMovieVideos(id);
+    return result.map((videos) => videos
+        .where((video) => video.site == "YouTube" && video.type == "Trailer")
+        .toList());
   }
 }

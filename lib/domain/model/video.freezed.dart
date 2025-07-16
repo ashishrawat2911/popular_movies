@@ -28,6 +28,9 @@ mixin _$Video {
   $VideoCopyWith<Video> get copyWith =>
       _$VideoCopyWithImpl<Video>(this as Video, _$identity);
 
+  /// Serializes this Video to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -41,6 +44,7 @@ mixin _$Video {
             (identical(other.type, type) || other.type == type));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, key, name, site, size, type);
 
@@ -275,8 +279,10 @@ extension VideoPatterns on Video {
 
 /// @nodoc
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _Video implements Video {
   const _Video(this.id, this.key, this.name, this.site, this.size, this.type);
+  factory _Video.fromJson(Map<String, dynamic> json) => _$VideoFromJson(json);
 
   @override
   final String id;
@@ -300,6 +306,13 @@ class _Video implements Video {
       __$VideoCopyWithImpl<_Video>(this, _$identity);
 
   @override
+  Map<String, dynamic> toJson() {
+    return _$VideoToJson(
+      this,
+    );
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -312,6 +325,7 @@ class _Video implements Video {
             (identical(other.type, type) || other.type == type));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, key, name, site, size, type);
 

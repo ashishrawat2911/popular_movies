@@ -18,12 +18,12 @@ class _MovieApiService implements MovieApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<MovieListResponseModel> getMovies() async {
+  Future<PageResponse<Movie>> getMovies() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MovieListResponseModel>(
+    final _options = _setStreamType<PageResponse<Movie>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -34,9 +34,12 @@ class _MovieApiService implements MovieApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MovieListResponseModel _value;
+    late PageResponse<Movie> _value;
     try {
-      _value = MovieListResponseModel.fromJson(_result.data!);
+      _value = PageResponse<Movie>.fromJson(
+        _result.data!,
+        (json) => Movie.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -45,12 +48,12 @@ class _MovieApiService implements MovieApiService {
   }
 
   @override
-  Future<MovieResponseModel> getMovieDetails(int id) async {
+  Future<MovieDetails> getMovieDetails(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MovieResponseModel>(
+    final _options = _setStreamType<MovieDetails>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -61,9 +64,9 @@ class _MovieApiService implements MovieApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MovieResponseModel _value;
+    late MovieDetails _value;
     try {
-      _value = MovieResponseModel.fromJson(_result.data!);
+      _value = MovieDetails.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -72,12 +75,12 @@ class _MovieApiService implements MovieApiService {
   }
 
   @override
-  Future<VideosResponse> getMovieVideos(int movieId) async {
+  Future<PageResponse<Video>> getMovieVideos(int movieId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<VideosResponse>(
+    final _options = _setStreamType<PageResponse<Video>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -88,9 +91,12 @@ class _MovieApiService implements MovieApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late VideosResponse _value;
+    late PageResponse<Video> _value;
     try {
-      _value = VideosResponse.fromJson(_result.data!);
+      _value = PageResponse<Video>.fromJson(
+        _result.data!,
+        (json) => Video.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

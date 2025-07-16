@@ -44,13 +44,6 @@ class MoviesDetailsViewModel extends Bloc<MovieDetailsEvent, MovieDetailState> {
       ));
     });
 
-    videoResult.forEach((videos) => emit(
-          state.copyWith(
-            videos: videos
-                .where((video) =>
-                    video.site == "YouTube" && video.type == "Trailer")
-                .toList(),
-          ),
-        ));
+    videoResult.forEach((videos) => emit(state.copyWith(videos: videos)));
   }
 }

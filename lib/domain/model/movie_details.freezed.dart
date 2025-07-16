@@ -27,6 +27,9 @@ mixin _$MovieDetails {
       _$MovieDetailsCopyWithImpl<MovieDetails>(
           this as MovieDetails, _$identity);
 
+  /// Serializes this MovieDetails to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -41,6 +44,7 @@ mixin _$MovieDetails {
                 other.overview == overview));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, backdropPath, title, voteAverage, overview);
@@ -267,9 +271,12 @@ extension MovieDetailsPatterns on MovieDetails {
 
 /// @nodoc
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _MovieDetails implements MovieDetails {
   const _MovieDetails(
       this.backdropPath, this.title, this.voteAverage, this.overview);
+  factory _MovieDetails.fromJson(Map<String, dynamic> json) =>
+      _$MovieDetailsFromJson(json);
 
   @override
   final String backdropPath;
@@ -289,6 +296,13 @@ class _MovieDetails implements MovieDetails {
       __$MovieDetailsCopyWithImpl<_MovieDetails>(this, _$identity);
 
   @override
+  Map<String, dynamic> toJson() {
+    return _$MovieDetailsToJson(
+      this,
+    );
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -302,6 +316,7 @@ class _MovieDetails implements MovieDetails {
                 other.overview == overview));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, backdropPath, title, voteAverage, overview);

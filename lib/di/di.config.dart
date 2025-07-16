@@ -15,17 +15,10 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:popular_movies/core/services/connectivity_service.dart'
     as _i274;
-import 'package:popular_movies/data/mapper/movie_domain_mapper.dart' as _i1059;
 import 'package:popular_movies/data/repository/movie_repository_impl.dart'
     as _i959;
-import 'package:popular_movies/data/source/movie_data_store_factory.dart'
-    as _i137;
-import 'package:popular_movies/data/source/movie_remote_data_source.dart'
-    as _i844;
 import 'package:popular_movies/data/source/remote/interceptor/api_auth_interceptor.dart'
     as _i665;
-import 'package:popular_movies/data/source/remote/movie_remote_data_source.dart'
-    as _i729;
 import 'package:popular_movies/data/source/remote/service/movie_api_service.dart'
     as _i58;
 import 'package:popular_movies/di/module/network_module.dart' as _i209;
@@ -61,7 +54,6 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final networkModule = _$NetworkModule();
-    gh.factory<_i1059.MovieDomainMapper>(() => _i1059.MovieDomainMapper());
     gh.singleton<_i895.Connectivity>(() => networkModule.connectivity);
     gh.singleton<_i736.AppRouter>(() => _i736.AppRouter());
     gh.factory<String>(
@@ -75,15 +67,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(
         () => networkModule.dio(gh<_i665.MovieApiAuthInterceptor>()));
     gh.singleton<_i58.MovieApiService>(
-        () => networkModule.movieApiService(gh<_i361.Dio>()));
-    gh.factory<_i844.MovieRemoteDataSource>(
-        () => _i729.MovieRemoteDataSourceImpl(gh<_i58.MovieApiService>()));
-    gh.singleton<_i137.MovieDataStoreFactory>(() => _i137.MovieDataStoreFactory(
-          gh<_i1059.MovieDomainMapper>(),
-          gh<_i844.MovieRemoteDataSource>(),
-        ));
+        () => _i58.MovieApiService(gh<_i361.Dio>()));
     gh.factory<_i959.MovieRepository>(
-        () => _i959.MovieRepositoryImpl(gh<_i137.MovieDataStoreFactory>()));
+        () => _i959.MovieRepositoryImpl(gh<_i58.MovieApiService>()));
     gh.factory<_i153.GetMoviesUseCase>(
         () => _i866.GetMoviesUseCaseImpl(gh<_i959.MovieRepository>()));
     gh.factory<_i578.GetMovieDetailUseCase>(

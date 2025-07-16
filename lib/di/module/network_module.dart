@@ -10,11 +10,6 @@ abstract class NetworkModule {
   @singleton
   Connectivity get connectivity => Connectivity();
 
-  @singleton
-  MovieApiService movieApiService(Dio dio) {
-    return MovieApiService(dio);
-  }
-
   @Named(Constants.apiKeyName)
   String get ApiKey => const String.fromEnvironment('MOVIE_API_KEY');
 

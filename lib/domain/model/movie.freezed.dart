@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$Movie {
   int get id;
   String get posterPath;
+  String get backdropPath;
   String get title;
   double get voteAverage;
   String get overview;
@@ -27,6 +28,9 @@ mixin _$Movie {
   $MovieCopyWith<Movie> get copyWith =>
       _$MovieCopyWithImpl<Movie>(this as Movie, _$identity);
 
+  /// Serializes this Movie to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -35,6 +39,8 @@ mixin _$Movie {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.posterPath, posterPath) ||
                 other.posterPath == posterPath) &&
+            (identical(other.backdropPath, backdropPath) ||
+                other.backdropPath == backdropPath) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.voteAverage, voteAverage) ||
                 other.voteAverage == voteAverage) &&
@@ -42,13 +48,14 @@ mixin _$Movie {
                 other.overview == overview));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, posterPath, title, voteAverage, overview);
+  int get hashCode => Object.hash(
+      runtimeType, id, posterPath, backdropPath, title, voteAverage, overview);
 
   @override
   String toString() {
-    return 'Movie(id: $id, posterPath: $posterPath, title: $title, voteAverage: $voteAverage, overview: $overview)';
+    return 'Movie(id: $id, posterPath: $posterPath, backdropPath: $backdropPath, title: $title, voteAverage: $voteAverage, overview: $overview)';
   }
 }
 
@@ -60,6 +67,7 @@ abstract mixin class $MovieCopyWith<$Res> {
   $Res call(
       {int id,
       String posterPath,
+      String backdropPath,
       String title,
       double voteAverage,
       String overview});
@@ -79,6 +87,7 @@ class _$MovieCopyWithImpl<$Res> implements $MovieCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? posterPath = null,
+    Object? backdropPath = null,
     Object? title = null,
     Object? voteAverage = null,
     Object? overview = null,
@@ -91,6 +100,10 @@ class _$MovieCopyWithImpl<$Res> implements $MovieCopyWith<$Res> {
       posterPath: null == posterPath
           ? _self.posterPath
           : posterPath // ignore: cast_nullable_to_non_nullable
+              as String,
+      backdropPath: null == backdropPath
+          ? _self.backdropPath
+          : backdropPath // ignore: cast_nullable_to_non_nullable
               as String,
       title: null == title
           ? _self.title
@@ -201,16 +214,16 @@ extension MoviePatterns on Movie {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int id, String posterPath, String title,
-            double voteAverage, String overview)?
+    TResult Function(int id, String posterPath, String backdropPath,
+            String title, double voteAverage, String overview)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Movie() when $default != null:
-        return $default(_that.id, _that.posterPath, _that.title,
-            _that.voteAverage, _that.overview);
+        return $default(_that.id, _that.posterPath, _that.backdropPath,
+            _that.title, _that.voteAverage, _that.overview);
       case _:
         return orElse();
     }
@@ -231,15 +244,15 @@ extension MoviePatterns on Movie {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(int id, String posterPath, String title,
-            double voteAverage, String overview)
+    TResult Function(int id, String posterPath, String backdropPath,
+            String title, double voteAverage, String overview)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Movie():
-        return $default(_that.id, _that.posterPath, _that.title,
-            _that.voteAverage, _that.overview);
+        return $default(_that.id, _that.posterPath, _that.backdropPath,
+            _that.title, _that.voteAverage, _that.overview);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -259,15 +272,15 @@ extension MoviePatterns on Movie {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int id, String posterPath, String title,
-            double voteAverage, String overview)?
+    TResult? Function(int id, String posterPath, String backdropPath,
+            String title, double voteAverage, String overview)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Movie() when $default != null:
-        return $default(_that.id, _that.posterPath, _that.title,
-            _that.voteAverage, _that.overview);
+        return $default(_that.id, _that.posterPath, _that.backdropPath,
+            _that.title, _that.voteAverage, _that.overview);
       case _:
         return null;
     }
@@ -276,14 +289,18 @@ extension MoviePatterns on Movie {
 
 /// @nodoc
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _Movie implements Movie {
-  const _Movie(
-      this.id, this.posterPath, this.title, this.voteAverage, this.overview);
+  const _Movie(this.id, this.posterPath, this.backdropPath, this.title,
+      this.voteAverage, this.overview);
+  factory _Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);
 
   @override
   final int id;
   @override
   final String posterPath;
+  @override
+  final String backdropPath;
   @override
   final String title;
   @override
@@ -300,6 +317,13 @@ class _Movie implements Movie {
       __$MovieCopyWithImpl<_Movie>(this, _$identity);
 
   @override
+  Map<String, dynamic> toJson() {
+    return _$MovieToJson(
+      this,
+    );
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -307,6 +331,8 @@ class _Movie implements Movie {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.posterPath, posterPath) ||
                 other.posterPath == posterPath) &&
+            (identical(other.backdropPath, backdropPath) ||
+                other.backdropPath == backdropPath) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.voteAverage, voteAverage) ||
                 other.voteAverage == voteAverage) &&
@@ -314,13 +340,14 @@ class _Movie implements Movie {
                 other.overview == overview));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, posterPath, title, voteAverage, overview);
+  int get hashCode => Object.hash(
+      runtimeType, id, posterPath, backdropPath, title, voteAverage, overview);
 
   @override
   String toString() {
-    return 'Movie(id: $id, posterPath: $posterPath, title: $title, voteAverage: $voteAverage, overview: $overview)';
+    return 'Movie(id: $id, posterPath: $posterPath, backdropPath: $backdropPath, title: $title, voteAverage: $voteAverage, overview: $overview)';
   }
 }
 
@@ -333,6 +360,7 @@ abstract mixin class _$MovieCopyWith<$Res> implements $MovieCopyWith<$Res> {
   $Res call(
       {int id,
       String posterPath,
+      String backdropPath,
       String title,
       double voteAverage,
       String overview});
@@ -352,6 +380,7 @@ class __$MovieCopyWithImpl<$Res> implements _$MovieCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? posterPath = null,
+    Object? backdropPath = null,
     Object? title = null,
     Object? voteAverage = null,
     Object? overview = null,
@@ -364,6 +393,10 @@ class __$MovieCopyWithImpl<$Res> implements _$MovieCopyWith<$Res> {
       null == posterPath
           ? _self.posterPath
           : posterPath // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == backdropPath
+          ? _self.backdropPath
+          : backdropPath // ignore: cast_nullable_to_non_nullable
               as String,
       null == title
           ? _self.title

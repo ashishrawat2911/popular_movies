@@ -36,14 +36,15 @@ class MoviesDetailScreen extends StatelessWidget {
   }
 
   Widget handleMovieUi(MovieDetailState state) {
-    return state.movieDetailResultState.when(loading: () {
+    return state.movieDetailResultState.map(loading: (_) {
       return const Center(
         child: CircularProgressIndicator(),
       );
-    }, result: (r) {
-      return _MovieDetailView(movieDetails: r, videos: state.videos);
-    }, error: (error) {
-      return Center(child: Text(error));
+    }, result: (resultState) {
+      return _MovieDetailView(
+          movieDetails: resultState.movie, videos: state.videos);
+    }, error: (errorState) {
+      return Center(child: Text(errorState.error));
     });
   }
 }
@@ -144,6 +145,7 @@ class _VideosItem extends StatelessWidget {
               imageUrl: video.key.getYoutubeThumbnailBaseURl,
             ),
           ),
+          const SizedBox(height: 8),
           Text(
             video.name,
             style: Theme.of(context).textTheme.bodyMedium,
